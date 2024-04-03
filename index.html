@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Change a layer's color with buttons</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+    .map-overlay {
+        font:
+            12px/20px 'Helvetica Neue',
+            Arial,
+            Helvetica,
+            sans-serif;
+        position: absolute;
+        width: 200px;
+        top: 0;
+        left: 0;
+        padding: 10px;
+    }
+
+    .map-overlay .map-overlay-inner {
+        background-color: #fff;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .map-overlay-inner fieldset {
+        border: none;
+        padding: 0;
+        margin: 0 0 10px;
+    }
+
+    .map-overlay-inner fieldset:last-child {
+        margin: 0;
+    }
+
+    .map-overlay-inner select {
+        width: 100%;
+    }
+
+    .map-overlay-inner label {
+        display: block;
+        font-weight: bold;
+        margin: 0 0 5px;
+    }
+
+    .map-overlay-inner button {
+        display: inline-block;
+        width: 36px;
+        height: 20px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .map-overlay-inner button:focus {
+        outline: none;
+    }
+
+    .map-overlay-inner button:hover {
+        box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div id="map"></div>
+<div class="map-overlay top">
+    <div class="map-overlay-inner">
+        <fieldset>
+            <label>Select layer</label>
+            <select id="layer" name="layer">
+                <!-- Each value matches a layer ID. -->
+                <option value="agunison">agunison</option>
+                <option value="chatancho">chatancho</option>
+                <option value="ginowan">ginowan</option>
+                <option value="ginozason">ginozason</option>
+                <option value="haebarucho">haebarucho</option>
+                <option value="higashison">higashison</option>
+                <option value="ieson">ieson</option>
+                <option value="iheyason">iheyason</option>
+                <option value="ishigaki">ishigaki</option>
+                <option value="itoman">itoman</option>
+                <option value="izenason">izenason</option>
+                <option value="kadenacho">kadenacho</option>
+                <option value="kincho">kincho</option>
+                <option value="kitadaitoson">kitadaitoson</option>
+                <option value="kitanakagusukuson">kitanakagusukuson</option>
+                <option value="kumejimacho">kumejimacho</option>
+                <option value="kunigamison">kunigamison</option>
+                <option value="matobucho">matobucho</option>
+                <option value="minamidaitoson">minamidaitoson</option>
+                <option value="miyakojima">miyakojima</option>
+                <option value="nago">nago</option>
+                <option value="naha">naha</option>
+                <option value="nakagusukuson">nakagusukuson</option>
+                <option value="nakijinson">nakijinson</option>
+                <option value="nanjo">nanjo</option>
+                <option value="nishiharacho">nishiharacho</option>
+                <option value="ogimison">ogimison</option>
+                <option value="okinawa">okinawa</option>
+                <option value="onnason">onnason</option>
+                <option value="taketomicho">taketomicho</option>
+                <option value="taramason">taramason</option>
+                <option value="tokashikison">tokashikison</option>
+                <option value="tomigusuku">tomigusuku</option>
+                <option value="tonakison">tonakison</option>
+                <option value="urazoe">urazoe</option>
+                <option value="uruma">uruma</option>
+                <option value="yaesecho">yaesecho</option>
+                <option value="yomitanson">yomitanson</option>
+                <option value="yonabarucho">yonabarucho</option>
+                <option value="yonagunicho">yonagunicho</option>
+                <option value="zamamison">zamamison</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <label>Choose a color</label>
+            <div id="swatches"></div>
+        </fieldset>
+    </div>
+</div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibnlhbWF0byIsImEiOiJja2Y4dzNkOW8wY3MwMnFvM29iNnJzNzVzIn0.GHlHwu3r5YjKBU3qAKvccQ';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [127.93383619628926, 26.504074468870304],
+        zoom: 9
+    });
+
+    map.on('load', () => {
+        function addLayer(id, geojsonPath) {
+            map.addSource(id, {
+                type: 'geojson',
+                data: geojsonPath
+            });
+            map.addLayer({
+                id: id,
+                type: 'fill',
+                source: id,
+                paint: {
+                    'fill-outline-color': 'rgba(0,0,0,1)',
+                    'fill-color': 'rgba(255,255,255,.5)'
+                }
+            });
+        }
+
+        addLayer('agunison', './geojson/boundaries/agunison.geojson');
+        addLayer('chatancho', './geojson/boundaries/chatancho.geojson');
+        addLayer('ginowan', './geojson/boundaries/ginowan.geojson');
+        addLayer('ginozason', './geojson/boundaries/ginozason.geojson');
+        addLayer('haebarucho', './geojson/boundaries/haebarucho.geojson');
+        addLayer('higashison', './geojson/boundaries/higashison.geojson');
+        addLayer('ieson', './geojson/boundaries/ieson.geojson');
+        addLayer('iheyason', './geojson/boundaries/iheyason.geojson');
+        addLayer('ishigaki', './geojson/boundaries/ishigaki.geojson');
+        addLayer('itoman', './geojson/boundaries/itoman.geojson');
+        addLayer('izenason', './geojson/boundaries/izenason.geojson');
+        addLayer('kadenacho', './geojson/boundaries/kadenacho.geojson');
+        addLayer('kincho', './geojson/boundaries/kincho.geojson');
+        addLayer('kitadaitoson', './geojson/boundaries/kitadaitoson.geojson');
+        addLayer('kitanakagusukuson', './geojson/boundaries/kitanakagusukuson.geojson');
+        addLayer('kumejimacho', './geojson/boundaries/kumejimacho.geojson');
+        addLayer('kunigamison', './geojson/boundaries/kunigamison.geojson');
+        addLayer('motobucho', './geojson/boundaries/motobucho.geojson');
+        addLayer('minamidaitoson', './geojson/boundaries/minamidaitoson.geojson');
+        addLayer('nago', './geojson/boundaries/nago.geojson');
+        addLayer('naha', './geojson/boundaries/naha.geojson');
+        addLayer('nakagusukuson', './geojson/boundaries/nakagusukuson.geojson');
+        addLayer('nakijinson', './geojson/boundaries/nakijinson.geojson');
+        addLayer('nanjo', './geojson/boundaries/nanjo.geojson');
+        addLayer('nishiharacho', './geojson/boundaries/nishiharacho.geojson');
+        addLayer('ogimison', './geojson/boundaries/ogimison.geojson');
+        addLayer('okinawa', './geojson/boundaries/okinawa.geojson');
+        addLayer('onnason', './geojson/boundaries/onnason.geojson');
+        addLayer('taketomicho', './geojson/boundaries/taketomicho.geojson');
+        addLayer('taramason', './geojson/boundaries/taramason.geojson');
+        addLayer('tokashikison', './geojson/boundaries/tokashikison.geojson');
+        addLayer('tomigusuku', './geojson/boundaries/tomigusuku.geojson');
+        addLayer('tonakison', './geojson/boundaries/tonakison.geojson');
+        addLayer('urazoe', './geojson/boundaries/urazoe.geojson');
+        addLayer('uruma', './geojson/boundaries/uruma.geojson');
+        addLayer('yaesecho', './geojson/boundaries/yaesecho.geojson');
+        addLayer('yomitanson', './geojson/boundaries/yomitanson.geojson');
+        addLayer('yonabarucho', './geojson/boundaries/yonabarucho.geojson');
+        addLayer('yonagunicho', './geojson/boundaries/yonagunicho.geojson');
+        addLayer('zamamison', './geojson/boundaries/zamamison.geojson');
+    });
+
+    const swatches = document.getElementById('swatches');
+    const layer = document.getElementById('layer');
+    const colors = [
+        '#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494',
+        '#fed976', '#feb24c', '#fd8d3c', '#f03b20', '#bd0026'
+    ];
+
+    for (const color of colors) {
+        const swatch = document.createElement('button');
+        swatch.style.backgroundColor = color;
+        swatch.addEventListener('click', () => {
+            map.setPaintProperty(layer.value, 'fill-color', color);
+        });
+        swatches.appendChild(swatch);
+    }
+</script>
+
+
+</body>
+</html>
