@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Change a layer's color with buttons</title>
+<link rel="icon" href="./img/favicon.ico">
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
@@ -152,6 +153,21 @@ body { margin: 0; padding: 0; }
                     'fill-color': 'rgba(255,255,255,.5)'
                 }
             });
+
+            // ポップアップ //
+            map.on('click', id, function (e) {
+                new mapboxgl.Popup()
+                    .setLngLat(e.lngLat)
+                    .setHTML(e.features[0].properties["N03_004"])
+                    .addTo(map);
+            });
+            map.on('mouseenter', id, function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', id, function () {
+                map.getCanvas().style.cursor = '';
+            });
+
         }
 
         addLayer('agunison', './geojson/boundaries/agunison.geojson');
