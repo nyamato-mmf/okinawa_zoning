@@ -10,6 +10,20 @@
 <style>
 body { margin: 0; padding: 0; }
 #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+.color-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+.color-button {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 5px;
+    border: none;
+    cursor: pointer;
+}
+.color-button:focus {
+    outline: none;
+}
 </style>
 </head>
 <body>
@@ -53,22 +67,6 @@ body { margin: 0; padding: 0; }
         display: block;
         font-weight: bold;
         margin: 0 0 5px;
-    }
-
-    .map-overlay-inner button {
-        display: inline-block;
-        width: 36px;
-        height: 20px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .map-overlay-inner button:focus {
-        outline: none;
-    }
-
-    .map-overlay-inner button:hover {
-        box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.1);
     }
 </style>
 
@@ -123,7 +121,7 @@ body { margin: 0; padding: 0; }
         </fieldset>
         <fieldset>
             <label>Choose a color</label>
-            <div id="swatches"></div>
+            <div id="color-wrapper" class="color-wrapper"></div>
         </fieldset>
     </div>
 </div>
@@ -149,7 +147,7 @@ body { margin: 0; padding: 0; }
                 source: id,
                 paint: {
                     'fill-outline-color': 'rgba(0,0,0,1)',
-                    'fill-color': getSavedColor(id) || 'rgba(255,255,255,1)' // Retrieve color from localStorage
+                    'fill-color': getSavedColor(id) || 'rgba(255,255,255,.5)' // Retrieve color from localStorage
                 }
             });
 
@@ -212,21 +210,31 @@ body { margin: 0; padding: 0; }
 
     });
 
-    const swatches = document.getElementById('swatches');
+    const colorWrapper = document.getElementById('color-wrapper');
     const layer = document.getElementById('layer');
     const colors = [
-        '#ffffff', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494',
-        '#fed976', '#feb24c', '#fd8d3c', '#f03b20', '#bd0026'
+        { name: 'Light Yellow', value: '#ffffcc' },
+        { name: 'Light Green', value: '#a1dab4' },
+        { name: 'Turquoise', value: '#41b6c4' },
+        { name: 'Blue', value: '#2c7fb8' },
+        { name: 'Dark Blue', value: '#253494' },
+        { name: 'Light Orange', value: '#fed976' },
+        { name: 'Orange', value: '#feb24c' },
+        { name: 'Red-Orange', value: '#fd8d3c' },
+        { name: 'Red', value: '#f03b20' },
+        { name: 'Dark Red', value: '#bd0026' }
     ];
 
     for (const color of colors) {
-        const swatch = document.createElement('button');
-        swatch.style.backgroundColor = color;
-        swatch.addEventListener('click', () => {
-            map.setPaintProperty(layer.value, 'fill-color', color);
-            saveColor(layer.value, color); // Save color to localStorage
+        const button = document.createElement('button');
+        button.textContent = color.name;
+        button.className = 'color-button';
+        button.style.backgroundColor = color.value;
+        button.addEventListener('click', () => {
+            map.setPaintProperty(layer.value, 'fill-color', color.value);
+            saveColor(layer.value, color.value); // Save color to localStorage
         });
-        swatches.appendChild(swatch);
+        colorWrapper.appendChild(button);
     }
 
     function saveColor(layerId, color) {
