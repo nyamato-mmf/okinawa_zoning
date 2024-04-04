@@ -24,6 +24,15 @@ body { margin: 0; padding: 0; }
 .color-button:focus {
     outline: none;
 }
+.clear-button {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #ffffff;
+    color: #000000;
+}
 </style>
 </head>
 <body>
@@ -140,6 +149,7 @@ body { margin: 0; padding: 0; }
         <fieldset>
             <label>Choose a color</label>
             <div id="color-wrapper" class="color-wrapper"></div>
+            <button id="clear-button" class="clear-button">All Clear</button>
         </fieldset>
     </div>
 </div>
@@ -280,6 +290,21 @@ body { margin: 0; padding: 0; }
         colorWrapper.appendChild(button);
     }
 
+
+    const clearButton = document.getElementById('clear-button');
+    clearButton.addEventListener('click', () => {
+        clearAllColors();
+    });
+    
+    function clearAllColors() {
+        const layers = document.getElementById('layer').options;
+        for (let i = 1; i < layers.length; i++) {
+            const layerId = layers[i].value;
+            map.setPaintProperty(layerId, 'fill-color', '#ffffff'); // Set color to white for each layer
+            saveColor(layerId, '#ffffff'); // Save color to localStorage
+        }
+    }
+
     function saveColor(layerId, color) {
         localStorage.setItem(layerId, color);
     }
@@ -287,6 +312,7 @@ body { margin: 0; padding: 0; }
     function getSavedColor(layerId) {
         return localStorage.getItem(layerId);
     }
+
 </script>
 
 </body>
