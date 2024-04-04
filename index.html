@@ -78,7 +78,6 @@ body { margin: 0; padding: 0; }
         <fieldset>
             <label>Select layer</label>
             <select id="layer" name="layer">
-                <!-- Each value matches a layer ID. -->
                 <option value="naha">那覇市</option>
                 <option value="ginowan">宜野湾市</option>
                 <option value="ishigaki">石垣市</option>
@@ -150,7 +149,7 @@ body { margin: 0; padding: 0; }
                 source: id,
                 paint: {
                     'fill-outline-color': 'rgba(0,0,0,1)',
-                    'fill-color': 'rgba(255,255,255,.5)'
+                    'fill-color': getSavedColor(id) || 'rgba(255,255,255,.5)' // Retrieve color from localStorage
                 }
             });
 
@@ -210,6 +209,7 @@ body { margin: 0; padding: 0; }
         addLayer('yonabarucho', './geojson/boundaries/yonabarucho.geojson');
         addLayer('yonagunicho', './geojson/boundaries/yonagunicho.geojson');
         addLayer('zamamison', './geojson/boundaries/zamamison.geojson');
+
     });
 
     const swatches = document.getElementById('swatches');
@@ -224,11 +224,19 @@ body { margin: 0; padding: 0; }
         swatch.style.backgroundColor = color;
         swatch.addEventListener('click', () => {
             map.setPaintProperty(layer.value, 'fill-color', color);
+            saveColor(layer.value, color); // Save color to localStorage
         });
         swatches.appendChild(swatch);
     }
-</script>
 
+    function saveColor(layerId, color) {
+        localStorage.setItem(layerId, color);
+    }
+
+    function getSavedColor(layerId) {
+        return localStorage.getItem(layerId);
+    }
+</script>
 
 </body>
 </html>
