@@ -73,9 +73,27 @@ body { margin: 0; padding: 0; }
 <div id="map"></div>
 <div class="map-overlay top">
     <div class="map-overlay-inner">
+
+        <fieldset>
+            <form id="fly">
+                <div class="row m-2">
+                    <!-- Select a city to fly to -->
+                    <label>Fly to</label>
+                    <select id="area" name="select" class="form-select">
+                        <option value="">エリアを選択</option>
+                        <option value="fly-okinawa">沖縄県</option>
+                        <option value="fly-mainland">沖縄本島</option>
+                        <option value="fly-miyako">宮古諸島</option>
+                        <option value="fly-yaeyama">八重山諸島</option>
+                    </select>
+                </div>
+            </form>
+        </fieldset>
+
         <fieldset>
             <label>Select layer</label>
             <select id="layer" name="layer">
+                <option value="">市町村を選択</option>
                 <option value="naha">那覇市</option>
                 <option value="ginowan">宜野湾市</option>
                 <option value="ishigaki">石垣市</option>
@@ -136,6 +154,30 @@ body { margin: 0; padding: 0; }
     });
 
     map.on('load', () => {
+
+
+        // Fly to functionality
+        document.getElementById("fly").select.onchange = function() {
+            var target = document.getElementById("fly").select.value;
+            console.log(target);
+
+            const flyLocations = {
+                "fly-japan": { center: [136.33549197330444, 38.49148243962729], zoom: 4 },
+                "fly-okinawa": { center: [125.48412170741628, 25.246402621655474], zoom: 7 },
+                "fly-mainland": { center: [127.93383619628926, 26.504074468870304], zoom: 9 },
+                "fly-miyako": { center: [125.27760692009161, 24.804254267582774], zoom: 10 },
+                "fly-yaeyama": { center: [124.00066265308841, 24.38428842615502], zoom: 10 },
+            };
+
+            if (flyLocations[target]) {
+                map.flyTo({
+                    center: flyLocations[target].center,
+                    zoom: flyLocations[target].zoom,
+                    essential: true
+                });
+            }
+        };
+
         function addLayer(id, geojsonPath) {
             map.addSource(id, {
                 type: 'geojson',
@@ -147,7 +189,7 @@ body { margin: 0; padding: 0; }
                 source: id,
                 paint: {
                     'fill-outline-color': 'rgba(0,0,0,1)',
-                    'fill-color': getSavedColor(id) || 'rgba(255,255,255,.5)' // Retrieve color from localStorage
+                    'fill-color': getSavedColor(id) || 'rgba(255,255,255,1)' // Retrieve color from localStorage
                 }
             });
 
@@ -186,6 +228,7 @@ body { margin: 0; padding: 0; }
         addLayer('kunigamison', './geojson/boundaries/kunigamison.geojson');
         addLayer('motobucho', './geojson/boundaries/motobucho.geojson');
         addLayer('minamidaitoson', './geojson/boundaries/minamidaitoson.geojson');
+        addLayer('miyakojima', './geojson/boundaries/miyakojima.geojson');
         addLayer('nago', './geojson/boundaries/nago.geojson');
         addLayer('naha', './geojson/boundaries/naha.geojson');
         addLayer('nakagusukuson', './geojson/boundaries/nakagusukuson.geojson');
@@ -213,16 +256,16 @@ body { margin: 0; padding: 0; }
     const colorWrapper = document.getElementById('color-wrapper');
     const layer = document.getElementById('layer');
     const colors = [
-        { name: 'Light Yellow', value: '#ffffcc' },
-        { name: 'Light Green', value: '#a1dab4' },
-        { name: 'Turquoise', value: '#41b6c4' },
-        { name: 'Blue', value: '#2c7fb8' },
-        { name: 'Dark Blue', value: '#253494' },
-        { name: 'Light Orange', value: '#fed976' },
-        { name: 'Orange', value: '#feb24c' },
-        { name: 'Red-Orange', value: '#fd8d3c' },
-        { name: 'Red', value: '#f03b20' },
-        { name: 'Dark Red', value: '#bd0026' }
+        { name: '無地', value: '#ffffff' },
+        { name: '高付加価値ホテル', value: '#33a8c7' },
+        { name: 'スポーツ', value: '#52e3e1' },
+        { name: 'エンターテインメント', value: '#a0e426' },
+        { name: 'グルメ', value: '#fdf148' },
+        { name: '伝統文化', value: '#ffab00' },
+        { name: '交通結節拠点', value: '#f77976' },
+        { name: '教育・研究', value: '#f050ae' },
+        { name: 'スタートアップ拠点', value: '#d883ff' },
+        { name: '高付加価値マリンレジャー', value: '#9336fd' }
     ];
 
     for (const color of colors) {
